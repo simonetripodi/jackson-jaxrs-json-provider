@@ -7,7 +7,7 @@
   </parent>
   <groupId>com.fasterxml.jackson</groupId>
   <artifactId>jackson-jaxrs-json-provider</artifactId>
-  <name>Jackson-jaxrs-json-provider</name>
+  <name>Jackson-JAXRS-JSON_Provider</name>
   <version>1.9.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <description>Functionality to handle JSON input/output for JAX-RS implementations (like Jersey and RESTeasy) using standard Jackson data binding.
@@ -150,7 +150,7 @@
           <extensions>true</extensions>
           <configuration>
             <instructions>
-              <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+              <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
               <Bundle-Vendor>fasterml.com</Bundle-Vendor>
               <Import-Package>
 javax.ws.rs
