@@ -47,7 +47,7 @@
   </organization>
 
   <dependencies>
-    <!-- Extends Jackson core, mapper -->
+    <!-- Extends Jackson core, mapper, and also (sort of optionally) on JAXB annotation handler -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
@@ -56,6 +56,11 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.9.2</version>
+    </dependency>
+    <dependency> <!-- Changes to "jackson-module-jaxb-annotations" for 2.0 -->
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-xc</artifactId>
       <version>1.9.2</version>
     </dependency>
     <!-- and we need JAX-RS annotations as well -->
