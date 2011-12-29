@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.jaxrs;
+package com.fasterxml.jackson.jaxrs.json;
 
 /**
  * Enumeration that defines standard annotation sets available for configuring

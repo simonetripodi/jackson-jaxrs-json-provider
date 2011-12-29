@@ -1,6 +1,6 @@
-package com.fasterxml.jackson.jaxrs;
+package com.fasterxml.jackson.jaxrs.json;
 
-import org.codehaus.jackson.map.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;

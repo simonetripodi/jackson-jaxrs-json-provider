@@ -7,4 +7,4 @@
  * exception mappers that can simplify handling of
  * error conditions.
  */
-package com.fasterxml.jackson.jaxrs;
+package com.fasterxml.jackson.jaxrs.json;

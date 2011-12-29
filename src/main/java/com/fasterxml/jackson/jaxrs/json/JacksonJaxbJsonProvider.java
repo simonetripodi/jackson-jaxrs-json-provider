@@ -1,11 +1,11 @@
-package com.fasterxml.jackson.jaxrs;
+package com.fasterxml.jackson.jaxrs.json;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * JSON content type provider automatically configured to use both Jackson
@@ -20,8 +20,6 @@ import org.codehaus.jackson.map.ObjectMapper;
  * is not clear whether JAX-RS implementations are required to
  * check settings of super-classes. It is important to keep annotations
  * in sync if changed.
- * 
- * @since 1.3
  */
 @Provider
 @Consumes({MediaType.APPLICATION_JSON, "text/json"})

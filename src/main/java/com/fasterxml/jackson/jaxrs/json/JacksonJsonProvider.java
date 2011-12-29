@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.jaxrs;
+package com.fasterxml.jackson.jaxrs.json;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -13,18 +13,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.ext.*;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonView;
-import org.codehaus.jackson.map.type.ClassKey;
-import org.codehaus.jackson.map.util.ClassUtil;
-import org.codehaus.jackson.map.util.JSONPObject;
-import org.codehaus.jackson.type.JavaType;
-import org.codehaus.jackson.util.VersionUtil;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.util.VersionUtil;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 
 /**
  * Basic implementation of JAX-RS abstractions ({@link MessageBodyReader},
@@ -127,8 +120,6 @@ public class JacksonJsonProvider
 
     /**
      * Set of types (classes) that provider should ignore for data binding
-     * 
-     * @since 1.5
      */
     protected HashSet<ClassKey> _cfgCustomUntouchables;
 
@@ -208,7 +199,7 @@ public class JacksonJsonProvider
      * like serializer/deserializer factories that have been configured)
      * is to be used.
      * 
-     * @annotationsToUse Sets of annotations (Jackson, JAXB) that provider should
+     * @param annotationsToUse Sets of annotations (Jackson, JAXB) that provider should
      *   support
      */
     public JacksonJsonProvider(ObjectMapper mapper, Annotations[] annotationsToUse)
@@ -219,8 +210,6 @@ public class JacksonJsonProvider
     /**
      * Method that will return version information stored in and read from jar
      * that contains this class.
-     * 
-     * @since 1.6
      */
     public Version version() {
         return VersionUtil.versionFor(getClass());
@@ -335,8 +324,6 @@ public class JacksonJsonProvider
      *   including abstract class or interface. No instance of this type
      *   (including subtypes, i.e. types assignable to this type) will
      *   be read or written by provider
-     * 
-     * @since 1.5
      */
     public void addUntouchable(Class<?> type)
     {
@@ -553,8 +540,6 @@ public class JacksonJsonProvider
     /**
      * Helper method to use for determining desired output encoding.
      * For now, will always just use UTF-8...
-     * 
-     * @since 1.7.0
      */
     protected JsonEncoding findEncoding(MediaType mediaType, MultivaluedMap<String,Object> httpHeaders)
     {
@@ -654,7 +639,7 @@ public class JacksonJsonProvider
             // First: type itself?
             if (set.contains(key)) return true;
             // Then supertypes (note: will not contain Object.class)
-            for (Class<?> cls : ClassUtil.findSuperTypes(mainType, null)) {
+            for (Class<?> cls : findSuperTypes(mainType, null)) {
                 key.reset(cls);
                 if (set.contains(key)) return true;
             }
@@ -690,4 +675,33 @@ public class JacksonJsonProvider
         }
         return null;
     }
+
+    private static List<Class<?>> findSuperTypes(Class<?> cls, Class<?> endBefore)
+    {
+        return findSuperTypes(cls, endBefore, new ArrayList<Class<?>>(8));
+    }
+
+    private static List<Class<?>> findSuperTypes(Class<?> cls, Class<?> endBefore, List<Class<?>> result)
+    {
+        _addSuperTypes(cls, endBefore, result, false);
+        return result;
+    }
+    
+    private static void _addSuperTypes(Class<?> cls, Class<?> endBefore, Collection<Class<?>> result, boolean addClassItself)
+    {
+        if (cls == endBefore || cls == null || cls == Object.class) {
+            return;
+        }
+        if (addClassItself) {
+            if (result.contains(cls)) { // already added, no need to check supers
+                return;
+            }
+            result.add(cls);
+        }
+        for (Class<?> intCls : cls.getInterfaces()) {
+            _addSuperTypes(intCls, endBefore, result, true);
+        }
+        _addSuperTypes(cls.getSuperclass(), endBefore, result, true);
+    }
+
 }

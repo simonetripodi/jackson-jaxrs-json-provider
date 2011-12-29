@@ -1,11 +1,12 @@
-package com.fasterxml.jackson.jaxrs;
+package com.fasterxml.jackson.jaxrs.json;
 
 import java.util.*;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.map.*;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
+import com.fasterxml.jackson.core.*;
+
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 /**
  * Helper class used to encapsulate details of configuring an
@@ -122,7 +123,6 @@ public class MapperConfigurator
         return _mapper;
     }
 
-    // since replacement methods were added in 1.8, let's not yet switch over to use them:
     @SuppressWarnings("deprecation")
     protected void _setAnnotations(ObjectMapper mapper, Annotations[] annotationsToUse)
     {
@@ -132,8 +132,7 @@ public class MapperConfigurator
         } else {
             intr = _resolveIntrospectors(annotationsToUse);
         }
-        mapper.getDeserializationConfig().setAnnotationIntrospector(intr);
-        mapper.getSerializationConfig().setAnnotationIntrospector(intr);
+        mapper.setAnnotationIntrospector(intr);
     }
 
 
