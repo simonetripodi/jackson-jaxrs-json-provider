@@ -15,7 +15,6 @@ import javax.ws.rs.ext.*;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
@@ -212,7 +211,7 @@ public class JacksonJsonProvider
      * that contains this class.
      */
     public Version version() {
-        return VersionUtil.versionFor(getClass());
+        return ModuleVersion.instance.version();
     }
     
     /*
