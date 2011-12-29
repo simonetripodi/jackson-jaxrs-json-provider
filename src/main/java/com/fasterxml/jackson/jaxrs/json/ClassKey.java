@@ -1,10 +1,7 @@
 package com.fasterxml.jackson.jaxrs.json;
 
 /**
- * Key class, used as an efficient and accurate key
- * for locating per-class values, such as
- * {@link com.fasterxml.jackson.databind.JsonSerializer}s.
- *<p>
+ * Efficient key class, used instead of using <code>Class</code>.
  * The reason for having a separate key class instead of
  * directly using {@link Class} as key is mostly
  * to allow for redefining <code>hashCode</code> method --
@@ -59,13 +56,12 @@ public final class ClassKey
     /**********************************************************
      */
 
-    @Override
-    public int compareTo(ClassKey other)
-    {
-        // Just need to sort by name, ok to collide (unless used in TreeMap/Set!)
+    // Just need to sort by name, ok to collide (unless used in TreeMap/Set!)
+    //@Override
+    public int compareTo(ClassKey other) {
         return _className.compareTo(other._className);
     }
-
+    
     /*
     /**********************************************************
     /* Standard methods
@@ -92,6 +88,5 @@ public final class ClassKey
 
     @Override public int hashCode() { return _hashCode; }
 
-    @Override public String toString() { return _className; }
-    
+    @Override public String toString() { return _className; }    
 }

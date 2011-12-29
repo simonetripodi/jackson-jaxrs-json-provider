@@ -79,9 +79,29 @@
       <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
+    <!--  and for some reason actual JAX-RS impl too -->
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-core</artifactId>
+      <version>1.8</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>1.8</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
+    <!--  need to enable filtering to add version info -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>  
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

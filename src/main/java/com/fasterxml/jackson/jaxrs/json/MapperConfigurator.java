@@ -123,7 +123,6 @@ public class MapperConfigurator
         return _mapper;
     }
 
-    @SuppressWarnings("deprecation")
     protected void _setAnnotations(ObjectMapper mapper, Annotations[] annotationsToUse)
     {
         AnnotationIntrospector intr;
