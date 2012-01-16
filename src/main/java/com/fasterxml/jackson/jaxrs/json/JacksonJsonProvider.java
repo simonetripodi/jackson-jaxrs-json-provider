@@ -499,7 +499,7 @@ public class JacksonJsonProvider
                  * specialized with 'value.getClass()'? Let's see how well this works before
                  * trying to come up with more complete solution.
                  */
-                rootType = mapper.getTypeFactory().constructType(genericType);
+                rootType = mapper.constructType(genericType);
                 /* 26-Feb-2011, tatu: To help with [JACKSON-518], we better recognize cases where
                  *    type degenerates back into "Object.class" (as is the case with plain TypeVariable,
                  *    for example), and not use that.
@@ -655,7 +655,7 @@ public class JacksonJsonProvider
          * Let's not bother, then, since this works well for now.
          */
         for (Annotation annotation : annotations) {
-            if (annotation.annotationType().isAssignableFrom(JsonView.class)) {
+            if (JsonView.class == annotation.annotationType()) {
                 JsonView jsonView = (JsonView) annotation;
                 Class<?>[] views = jsonView.value();
                 if (views.length > 1) {
