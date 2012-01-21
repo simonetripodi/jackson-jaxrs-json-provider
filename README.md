@@ -6,7 +6,8 @@ This is done by class `JacksonJsonProvider` implementing `javax.ws.rs.ext.Messag
 
 ## Status
 
-Module is fully usable -- code was refactored from Jackson 1.9 "jackson-jaxrs" component, into its own separate project (for Jackson 2.0)
+Module is fully usable, but since it was refactored as part of Jackson 2.0 project, it depends on Jackson 2.0 API.
+For previous (1.x) versions, use "Codehaus version".
 
 ## Maven dependency
 
