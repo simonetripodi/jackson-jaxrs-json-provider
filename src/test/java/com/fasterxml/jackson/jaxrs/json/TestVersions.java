@@ -12,7 +12,7 @@ public class TestVersions extends JaxrsTestBase
     private final static int MINOR_VERSION = 0;
 
     // could inject using Maven filters as well...
-    private final static String GROUP_ID = "com.fasterxml.jackson";
+    private final static String GROUP_ID = "com.fasterxml.jackson.jaxrs";
     private final static String ARTIFACT_ID = "jackson-jaxrs-json-provider";
     
     public void testMapperVersions()
