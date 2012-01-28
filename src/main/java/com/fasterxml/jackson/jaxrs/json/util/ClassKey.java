@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.jaxrs.json;
+package com.fasterxml.jackson.jaxrs.json.util;
 
 /**
  * Efficient key class, used instead of using <code>Class</code>.

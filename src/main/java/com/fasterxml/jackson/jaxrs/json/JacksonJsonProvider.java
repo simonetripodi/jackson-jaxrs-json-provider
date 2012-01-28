@@ -17,6 +17,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.jaxrs.json.util.AnnotationBundleKey;
+import com.fasterxml.jackson.jaxrs.json.util.ClassKey;
+import com.fasterxml.jackson.jaxrs.json.util.MapperConfigurator;
 
 /**
  * Basic implementation of JAX-RS abstractions ({@link MessageBodyReader},
@@ -55,7 +58,7 @@ public class JacksonJsonProvider
     implements
         MessageBodyReader<Object>,
         MessageBodyWriter<Object>,
-        Versioned // since 1.6
+        Versioned
 {
     /**
      * Default annotation sets to use, if not explicitly defined during
@@ -84,10 +87,13 @@ public class JacksonJsonProvider
         _untouchables.add(new ClassKey(java.io.Writer.class));
 
         // then some primitive types
-        _untouchables.add(new ClassKey(byte[].class));
         _untouchables.add(new ClassKey(char[].class));
-        // 24-Apr-2009, tatu: String is an edge case... let's leave it out
-        _untouchables.add(new ClassKey(String.class));
+
+        /* 28-Jan-2012, tatu: 1.x excluded some additional types;
+         *   but let's relax these a bit:
+         */
+        //_untouchables.add(new ClassKey(String.class));
+        //_untouchables.add(new ClassKey(byte[].class));
 
         // Then core JAX-RS things
         _untouchables.add(new ClassKey(StreamingOutput.class));
@@ -125,6 +131,8 @@ public class JacksonJsonProvider
     /**
      * JSONP function name to use for automatic JSONP wrapping, if any;
      * if null, no JSONP wrapping is done.
+     * Note that this is the default value that can be overridden on
+     * per-endpoint basis.
      */
     protected String _jsonpFunctionName;
     
@@ -473,6 +481,8 @@ public class JacksonJsonProvider
             MultivaluedMap<String,Object> httpHeaders, OutputStream entityStream) 
         throws IOException
     {
+//        AnnotationBundleKey annKey = new AnnotationBundleKey(annotations);
+        
         /* 27-Feb-2009, tatu: Where can we find desired encoding? Within
          *   HTTP headers?
          */
@@ -482,7 +492,7 @@ public class JacksonJsonProvider
         jg.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
 
         // Want indentation?
-        if (mapper.getSerializationConfig().isEnabled(SerializationConfig.Feature.INDENT_OUTPUT)) {
+        if (mapper.isEnabled(SerializationConfig.Feature.INDENT_OUTPUT)) {
             jg.useDefaultPrettyPrinter();
         }
         // 04-Mar-2010, tatu: How about type we were given? (if any)

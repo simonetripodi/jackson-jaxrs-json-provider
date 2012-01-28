@@ -20,7 +20,25 @@ import java.lang.annotation.Target;
  *<p>
  * Example usage:
  *<pre>
+ *  class Wrapper {
+ *     @JSONP("myFunc") public int value = 3;
+ *  }
  *</pre>
+ *  would serialize as:
+ *<pre>
+ *  myFunc({"value":3})
+ *<pre>
+ *  whereas
+ *</pre>
+ *<pre>
+ *  class Wrapper {
+ *     @JSONP(prefix="call(", suffix=")+3") public int value = 1;
+ *  }
+ *</pre>
+ *  would serialize as:
+ *<pre>
+ *  call({"value":1})+3
+ *<pre>
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)

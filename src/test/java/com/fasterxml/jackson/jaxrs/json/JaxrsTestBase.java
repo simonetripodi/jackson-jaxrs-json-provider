@@ -7,9 +7,7 @@ import org.junit.Assert;
 
 import com.fasterxml.jackson.core.*;
 
-//import com.fasterxml.jackson.databind.ObjectMapper;
-
-abstract class JaxrsTestBase
+public abstract class JaxrsTestBase
     extends junit.framework.TestCase
 {
 

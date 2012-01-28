@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.jaxrs.json;
+package com.fasterxml.jackson.jaxrs.json.util;
 
 import java.util.*;
 
@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.*;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.jaxrs.json.Annotations;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 /**
@@ -44,9 +45,9 @@ public class MapperConfigurator
     protected Class<? extends AnnotationIntrospector> _jaxbIntrospectorClass;
     
     /*
-    ***********************************************************
-    * Construction
-    ***********************************************************
+    /**********************************************************
+    /* Construction
+    /**********************************************************
      */
     
     public MapperConfigurator(ObjectMapper mapper, Annotations[] defAnnotations)
