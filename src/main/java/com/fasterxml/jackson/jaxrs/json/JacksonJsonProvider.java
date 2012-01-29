@@ -17,9 +17,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.jaxrs.json.cfg.MapperConfigurator;
 import com.fasterxml.jackson.jaxrs.json.util.AnnotationBundleKey;
 import com.fasterxml.jackson.jaxrs.json.util.ClassKey;
-import com.fasterxml.jackson.jaxrs.json.util.MapperConfigurator;
 
 /**
  * Basic implementation of JAX-RS abstractions ({@link MessageBodyReader},

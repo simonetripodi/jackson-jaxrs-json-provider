@@ -184,7 +184,9 @@ javax.ws.rs
 </Private-Package>
               <Export-Package>
 com.fasterxml.jackson.jaxrs.json,
-com.fasterxml.jackson.jaxrs.json.annotation
+com.fasterxml.jackson.jaxrs.json.annotation,
+com.fasterxml.jackson.jaxrs.json.cfg,
+com.fasterxml.jackson.jaxrs.json.util
 </Export-Package>
             </instructions>
           </configuration>

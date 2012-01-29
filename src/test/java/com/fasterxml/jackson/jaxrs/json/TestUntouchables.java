@@ -38,8 +38,10 @@ public class TestUntouchables
         assertTrue(prov.isWriteable(getClass(), getClass(), null, null));
 
         // but some types should be ignored (set of ignorable may change over time tho!)
-        assertFalse(prov.isReadable(String.class, getClass(), null, null));
         assertFalse(prov.isWriteable(StreamingOutput.class, StreamingOutput.class, null, null));
+
+        // and then on-the-fence things
+        assertTrue(prov.isReadable(String.class, getClass(), null, null));
     }
 
     public void testCustomUntouchables() throws Exception

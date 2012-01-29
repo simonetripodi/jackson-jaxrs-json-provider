@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.jaxrs.json.util;
+package com.fasterxml.jackson.jaxrs.json.cfg;
 
 import java.util.*;
 
@@ -39,8 +39,8 @@ public class MapperConfigurator
     protected Annotations[] _defaultAnnotationsToUse;
     
     /**
-     * To support optional dependency to Jackson-XC module (needed if and
-     * when JAXB annotations are used for configuration)
+     * To support optional dependency to Jackson JAXB annotations module
+     * (needed iff JAXB annotations are used for configuration)
      */
     protected Class<? extends AnnotationIntrospector> _jaxbIntrospectorClass;
     
