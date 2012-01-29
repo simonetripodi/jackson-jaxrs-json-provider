@@ -45,8 +45,44 @@ import java.lang.annotation.Target;
 @com.fasterxml.jackson.annotation.JacksonAnnotation
 public @interface JSONP
 {
+    /**
+     * Method used for JSONP, unless {@link #prefix()} or
+     * {@link #suffix()} return non-empty Strings.
+     */
     public String value() default "";
     
+    /**
+     * Prefix String used for JSONP if not empty: will be included
+     * verbatim before JSON value.
+     */
     public String prefix() default "";
+
+    /**
+     * Suffix String used for JSONP if not empty: will be included
+     * verbatim after JSON value.
+     */
     public String suffix() default "";
+
+    /**
+     * Helper class for encapsulating information from {@link JSONP}
+     * annotation instance.
+     */
+    public static class Def {
+        public final String method;
+        public final String prefix;
+        public final String suffix;
+
+        public Def(JSONP json) {
+            method = emptyAsNull(json.value());
+            prefix = emptyAsNull(json.prefix());
+            suffix = emptyAsNull(json.suffix());
+        }
+
+        private final static String emptyAsNull(String str) {
+            if (str == null || str.length() == 0) {
+                return null;
+            }
+            return str;
+        }
+    }
 }

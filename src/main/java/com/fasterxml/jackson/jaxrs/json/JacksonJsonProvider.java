@@ -18,7 +18,6 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fasterxml.jackson.jaxrs.json.cfg.MapperConfigurator;
-import com.fasterxml.jackson.jaxrs.json.util.AnnotationBundleKey;
 import com.fasterxml.jackson.jaxrs.json.util.ClassKey;
 
 /**
