@@ -10,12 +10,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 public class TestJsonView extends JaxrsTestBase
 {
-    /*
-    /**********************************************************
-    /* Helper types
-    /**********************************************************
-     */
-    
     static class MyView1 { }
     static class MyView2 { }
 
@@ -49,6 +43,4 @@ public class TestJsonView extends JaxrsTestBase
                 MediaType.APPLICATION_JSON_TYPE, null, out);
         assertEquals("{\"value1\":1}", out.toString("UTF-8"));
     }
-    
-
 }
