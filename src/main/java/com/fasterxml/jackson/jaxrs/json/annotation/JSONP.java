@@ -72,6 +72,12 @@ public @interface JSONP
         public final String prefix;
         public final String suffix;
 
+        public Def(String m) {
+            method = m;
+            prefix = null;
+            suffix = null;
+        }
+        
         public Def(JSONP json) {
             method = emptyAsNull(json.value());
             prefix = emptyAsNull(json.prefix());

@@ -13,11 +13,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.ext.*;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.databind.util.LRUMap;
+import com.fasterxml.jackson.jaxrs.json.annotation.EndpointConfig;
 import com.fasterxml.jackson.jaxrs.json.cfg.MapperConfigurator;
+import com.fasterxml.jackson.jaxrs.json.util.AnnotationBundleKey;
 import com.fasterxml.jackson.jaxrs.json.util.ClassKey;
 
 /**
@@ -116,6 +117,30 @@ public class JacksonJsonProvider
         StreamingOutput.class, Response.class
     };
 
+    /*
+    /**********************************************************
+    /* Bit of caching
+    /**********************************************************
+     */
+
+    /**
+     * Cache for resolved endpoint configurations when reading JSON data
+     */
+    protected final LRUMap<AnnotationBundleKey, EndpointConfig> _readers
+        = new LRUMap<AnnotationBundleKey, EndpointConfig>(16, 120);
+
+    /**
+     * Cache for resolved endpoint configurations when writing JSON data
+     */
+    protected final LRUMap<AnnotationBundleKey, EndpointConfig> _writers
+        = new LRUMap<AnnotationBundleKey, EndpointConfig>(16, 120);
+    
+    /*
+    /**********************************************************
+    /* General configuration
+    /**********************************************************
+     */
+    
     /**
      * Helper object used for encapsulating configuration aspects
      * of {@link ObjectMapper}
@@ -399,13 +424,23 @@ public class JacksonJsonProvider
     public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String,String> httpHeaders, InputStream entityStream) 
         throws IOException
     {
-        ObjectMapper mapper = locateMapper(type, mediaType);
-        JsonParser jp = mapper.getJsonFactory().createJsonParser(entityStream);
-        /* Important: we are NOT to close the underlying stream after
-         * mapping, so we need to instruct parser:
-         */
-        jp.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
-        return mapper.readValue(jp, mapper.constructType(genericType));
+        AnnotationBundleKey key = new AnnotationBundleKey(annotations);
+        EndpointConfig endpoint;
+        synchronized (_readers) {
+            endpoint = _readers.get(key);
+        }
+        // not yet resolved (or not cached any more)? Resolve!
+        if (endpoint == null) {
+            ObjectMapper mapper = locateMapper(type, mediaType);
+            endpoint = EndpointConfig.forReading(mapper, annotations);
+            // and cache for future reuse
+            synchronized (_readers) {
+                _readers.put(key.immutableKey(), endpoint);
+            }
+        }
+        ObjectReader reader = endpoint.getReader();
+        JsonParser jp = reader.getJsonFactory().createJsonParser(entityStream);
+        return reader.withType(genericType).readValue(jp);
     }
 
     /*
@@ -480,18 +515,32 @@ public class JacksonJsonProvider
             MultivaluedMap<String,Object> httpHeaders, OutputStream entityStream) 
         throws IOException
     {
-//        AnnotationBundleKey annKey = new AnnotationBundleKey(annotations);
+        AnnotationBundleKey key = new AnnotationBundleKey(annotations);
+        EndpointConfig endpoint;
+        synchronized (_writers) {
+            endpoint = _writers.get(key);
+        }
+        // not yet resolved (or not cached any more)? Resolve!
+        if (endpoint == null) {
+            ObjectMapper mapper = locateMapper(type, mediaType);
+            endpoint = EndpointConfig.forWriting(mapper, annotations,
+                    this._jsonpFunctionName);
+            // and cache for future reuse
+            synchronized (_writers) {
+                _writers.put(key.immutableKey(), endpoint);
+            }
+        }
+
+        ObjectWriter writer = endpoint.getWriter();
         
         /* 27-Feb-2009, tatu: Where can we find desired encoding? Within
          *   HTTP headers?
          */
-        ObjectMapper mapper = locateMapper(type, mediaType);
         JsonEncoding enc = findEncoding(mediaType, httpHeaders);
-        JsonGenerator jg = mapper.getJsonFactory().createJsonGenerator(entityStream, enc);
-        jg.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        JsonGenerator jg = writer.getJsonFactory().createJsonGenerator(entityStream, enc);
 
         // Want indentation?
-        if (mapper.isEnabled(SerializationConfig.Feature.INDENT_OUTPUT)) {
+        if (writer.isEnabled(SerializationConfig.Feature.INDENT_OUTPUT)) {
             jg.useDefaultPrettyPrinter();
         }
         // 04-Mar-2010, tatu: How about type we were given? (if any)
@@ -508,7 +557,7 @@ public class JacksonJsonProvider
                  * specialized with 'value.getClass()'? Let's see how well this works before
                  * trying to come up with more complete solution.
                  */
-                rootType = mapper.constructType(genericType);
+                rootType = writer.getTypeFactory().constructType(genericType);
                 /* 26-Feb-2011, tatu: To help with [JACKSON-518], we better recognize cases where
                  *    type degenerates back into "Object.class" (as is the case with plain TypeVariable,
                  *    for example), and not use that.
@@ -518,31 +567,15 @@ public class JacksonJsonProvider
                 }
             }
         }
-        // [JACKSON-578]: Allow use of @JsonView in resource methods.
-        Class<?> viewToUse = null;
-        if (annotations != null && annotations.length > 0) {
-            viewToUse = _findView(mapper, annotations);
+        // Most of the configuration now handled through EndpointConfig, ObjectWriter
+        // but we may need to force root type:
+        if (rootType != null) {
+            writer = writer.withType(rootType);
         }
-        if (viewToUse != null) {
-            ObjectWriter viewWriter = mapper.writerWithView(viewToUse);
-            // [JACKSON-245] Allow automatic JSONP wrapping
-            if (_jsonpFunctionName != null) {
-                viewWriter.writeValue(jg, new JSONPObject(this._jsonpFunctionName, value, rootType));
-            } else if (rootType != null) {
-                 viewWriter.withType(rootType).writeValue(jg, value);
-            } else {
-                viewWriter.writeValue(jg, value);
-            }
-        } else {
-            // [JACKSON-245] Allow automatic JSONP wrapping
-            if (_jsonpFunctionName != null) {
-                mapper.writeValue(jg, new JSONPObject(this._jsonpFunctionName, value, rootType));
-            } else if (rootType != null) {
-                mapper.writerWithType(rootType).writeValue(jg, value);
-            } else {
-                mapper.writeValue(jg, value);
-            }
-        }
+        // and finally, JSONP wrapping, if any:
+        value = endpoint.applyJSONP(value);
+        
+        writer.writeValue(jg, value);
     }
 
     /**
@@ -653,35 +686,6 @@ public class JacksonJsonProvider
             }
         }
         return false;
-    }
-
-    protected Class<?> _findView(ObjectMapper mapper, Annotation[] annotations)
-        throws JsonMappingException
-    {
-        /* Ideally we would try to use AnnotationIntrospector here, but current
-         * API expects to get a method/field, not bunch of annotations,
-         * so we would need to change it a bit.
-         * Let's not bother, then, since this works well for now.
-         */
-        for (Annotation annotation : annotations) {
-            if (JsonView.class == annotation.annotationType()) {
-                JsonView jsonView = (JsonView) annotation;
-                Class<?>[] views = jsonView.value();
-                if (views.length > 1) {
-                    StringBuilder s = new StringBuilder("Multiple @JsonView's can not be used on a JAX-RS method. Got ");
-                    s.append(views.length).append(" views: ");
-                    for (int i = 0; i < views.length; i++) {
-                        if (i > 0) {
-                            s.append(", ");
-                        }
-                        s.append(views[i].getName());
-                    }
-                    throw new JsonMappingException(s.toString());
-                }
-                return views[0];
-            }
-        }
-        return null;
     }
 
     private static List<Class<?>> findSuperTypes(Class<?> cls, Class<?> endBefore)

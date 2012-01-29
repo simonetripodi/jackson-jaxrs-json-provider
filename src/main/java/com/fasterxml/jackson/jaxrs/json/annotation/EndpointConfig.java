@@ -4,6 +4,8 @@ import java.lang.annotation.Annotation;
 
 import com.fasterxml.jackson.annotation.*;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fasterxml.jackson.databind.util.JSONWrappedObject;
@@ -51,11 +53,17 @@ public class EndpointConfig
             .initReader(mapper);
     }
 
-    public static EndpointConfig forWriting(ObjectMapper mapper, Annotation[] annotations)
+    public static EndpointConfig forWriting(ObjectMapper mapper, Annotation[] annotations,
+            String defaultJsonpMethod)
     {
-        return new EndpointConfig()
+        EndpointConfig config =  new EndpointConfig();
+        if (defaultJsonpMethod != null) {
+            config._jsonp = new JSONP.Def(defaultJsonpMethod);
+        }
+        return config
             .add(annotations, true)
-            .initWriter(mapper);
+            .initWriter(mapper)
+        ;
     }
     
     protected EndpointConfig add(Annotation[] annotations, boolean forWriting)
@@ -113,8 +121,11 @@ public class EndpointConfig
         if (_deserDisable != null) {
             _reader = _reader.withoutFeatures(_deserDisable);
         }
-        // then others
-
+        /* Important: we are NOT to close the underlying stream after
+         * mapping, so we need to instruct parser:
+         */
+        _reader.getJsonFactory().disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+        
         return this;
     }
     
@@ -123,6 +134,8 @@ public class EndpointConfig
         // first common config
         if (_activeView != null) {
             _writer = mapper.writerWithView(_activeView);
+        } else {
+            _writer = mapper.writer();
         }
         if (_rootName != null) {
             _writer = _writer.withRootName(_rootName);
@@ -136,6 +149,13 @@ public class EndpointConfig
         }
         // then others
 
+        // Finally: couple of features we always set
+
+        /* Important: we are NOT to close the underlying stream after
+         * mapping, so we need to instruct parser:
+         */
+        _writer.getJsonFactory().disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        
         return this;
     }
 
