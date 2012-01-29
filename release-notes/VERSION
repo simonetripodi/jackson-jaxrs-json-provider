@@ -1,0 +1,18 @@
+Version: 2.0.0
+
+Release date:
+  xx-Feb-2012
+
+Description:
+  The son of Jackson! Behold...
+
+New features:
+
+* [Issue-1] Add @JSONP annotation for declarative JSONP support
+* [Issue-2] Add @JacksonFeatures annotation for reconfiguring serialization,
+  deserialization features on per-endpoint basis
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
