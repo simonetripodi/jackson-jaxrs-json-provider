@@ -1,19 +1,16 @@
 package com.fasterxml.jackson.jaxrs.json;
 
 import java.io.*;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Method;
 
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import com.fasterxml.jackson.databind.DeserializationConfig;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import com.fasterxml.jackson.jaxrs.json.annotation.JacksonFeatures;
 
@@ -26,15 +23,15 @@ public class TestJacksonFeatures extends JaxrsTestBase
         public int a = 3;
     }
 
-    @JacksonFeatures(serializationEnable={ SerializationConfig.Feature.WRAP_ROOT_VALUE })
+    @JacksonFeatures(serializationEnable={ SerializationFeature.WRAP_ROOT_VALUE })
     public void writeConfig() { }
         
-    @JacksonFeatures(deserializationDisable={ DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES })
+    @JacksonFeatures(deserializationDisable={ DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES })
     public void readConfig() { }
 
     // Also, let's check that we can bundle annotations
     @JacksonAnnotationsInside
-    @JacksonFeatures(serializationEnable={ SerializationConfig.Feature.WRAP_ROOT_VALUE })
+    @JacksonFeatures(serializationEnable={ SerializationFeature.WRAP_ROOT_VALUE })
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface FeatureBundle { }

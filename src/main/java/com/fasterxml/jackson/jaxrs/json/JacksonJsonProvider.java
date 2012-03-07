@@ -287,12 +287,12 @@ public class JacksonJsonProvider
         _mapperConfig.setMapper(m);
     }
 
-    public JacksonJsonProvider configure(DeserializationConfig.Feature f, boolean state) {
+    public JacksonJsonProvider configure(DeserializationFeature f, boolean state) {
         _mapperConfig.configure(f, state);
         return this;
     }
 
-    public JacksonJsonProvider configure(SerializationConfig.Feature f, boolean state) {
+    public JacksonJsonProvider configure(SerializationFeature f, boolean state) {
         _mapperConfig.configure(f, state);
         return this;
     }
@@ -307,12 +307,12 @@ public class JacksonJsonProvider
         return this;
     }
 
-    public JacksonJsonProvider enable(DeserializationConfig.Feature f, boolean state) {
+    public JacksonJsonProvider enable(DeserializationFeature f, boolean state) {
         _mapperConfig.configure(f, true);
         return this;
     }
 
-    public JacksonJsonProvider enable(SerializationConfig.Feature f, boolean state) {
+    public JacksonJsonProvider enable(SerializationFeature f, boolean state) {
         _mapperConfig.configure(f, true);
         return this;
     }
@@ -327,12 +327,12 @@ public class JacksonJsonProvider
         return this;
     }
 
-    public JacksonJsonProvider disable(DeserializationConfig.Feature f, boolean state) {
+    public JacksonJsonProvider disable(DeserializationFeature f, boolean state) {
         _mapperConfig.configure(f, false);
         return this;
     }
 
-    public JacksonJsonProvider disable(SerializationConfig.Feature f, boolean state) {
+    public JacksonJsonProvider disable(SerializationFeature f, boolean state) {
         _mapperConfig.configure(f, false);
         return this;
     }
@@ -540,7 +540,7 @@ public class JacksonJsonProvider
         JsonGenerator jg = writer.getJsonFactory().createJsonGenerator(entityStream, enc);
 
         // Want indentation?
-        if (writer.isEnabled(SerializationConfig.Feature.INDENT_OUTPUT)) {
+        if (writer.isEnabled(SerializationFeature.INDENT_OUTPUT)) {
             jg.useDefaultPrettyPrinter();
         }
         // 04-Mar-2010, tatu: How about type we were given? (if any)

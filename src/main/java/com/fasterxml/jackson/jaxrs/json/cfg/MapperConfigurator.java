@@ -88,11 +88,11 @@ public class MapperConfigurator
         _setAnnotations(mapper(), annotationsToUse);
     }
 
-    public synchronized void configure(DeserializationConfig.Feature f, boolean state) {
+    public synchronized void configure(DeserializationFeature f, boolean state) {
         mapper().configure(f, state);
     }
 
-    public synchronized void configure(SerializationConfig.Feature f, boolean state) {
+    public synchronized void configure(SerializationFeature f, boolean state) {
         mapper().configure(f, state);
     }
 

@@ -24,8 +24,8 @@ public class EndpointConfig
 
     // // Deserialization-only config
     
-    protected DeserializationConfig.Feature[] _deserEnable;
-    protected DeserializationConfig.Feature[] _deserDisable;
+    protected DeserializationFeature[] _deserEnable;
+    protected DeserializationFeature[] _deserDisable;
 
     protected ObjectReader _reader;
     
@@ -33,8 +33,8 @@ public class EndpointConfig
 
     protected JSONP.Def _jsonp;
     
-    protected SerializationConfig.Feature[] _serEnable;
-    protected SerializationConfig.Feature[] _serDisable;
+    protected SerializationFeature[] _serEnable;
+    protected SerializationFeature[] _serDisable;
 
     protected ObjectWriter _writer;
     

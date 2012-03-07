@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.fasterxml.jackson.databind.DeserializationConfig;
-import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Annotation that can be used enable and/or disable various
@@ -20,20 +20,20 @@ public @interface JacksonFeatures
     /**
      * Deserialization features to enable.
      */
-    public DeserializationConfig.Feature[] deserializationEnable() default { };
+    public DeserializationFeature[] deserializationEnable() default { };
 
     /**
      * Deserialization features to disable.
      */
-    public DeserializationConfig.Feature[] deserializationDisable() default { };
+    public DeserializationFeature[] deserializationDisable() default { };
     
     /**
      * Serialization features to enable.
      */
-    public SerializationConfig.Feature[] serializationEnable() default { };
+    public SerializationFeature[] serializationEnable() default { };
 
     /**
      * Serialization features to disable.
      */
-    public SerializationConfig.Feature[] serializationDisable() default { };
+    public SerializationFeature[] serializationDisable() default { };
 }
