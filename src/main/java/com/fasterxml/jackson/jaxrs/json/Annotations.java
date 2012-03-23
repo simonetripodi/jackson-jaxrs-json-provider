@@ -6,7 +6,7 @@ package com.fasterxml.jackson.jaxrs.json;
  */
 public enum Annotations {
     /**
-     * Standard Jackson annotations, defined in Jackson core and mapper
+     * Standard Jackson annotations, defined in Jackson core and databind
      * packages
      */
     JACKSON,
