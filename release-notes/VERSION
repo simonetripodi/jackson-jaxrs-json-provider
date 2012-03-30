@@ -1,19 +1,26 @@
-Version: 2.0.0
+Version: 2.0.1
 
 Release date:
-  25-Mar-2012
+  xx-Apr-2012
 
 Description:
-  Official 2.0 release.
+  Patch release for 2.0
+
+Fixes:
+
+* Changed 'jaxrs-311' dependeny from 'compile' to 'provided'
+
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.0.0 [25-Mar-2012]
 
 New features:
 
 * [Issue-1] Add @JSONP annotation for declarative JSONP support
 * [Issue-2] Add @JacksonFeatures annotation for reconfiguring serialization,
   deserialization features on per-endpoint basis
-
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
 
 [entries for versions 1.x and earlier not retained; refer to earlier releases)
